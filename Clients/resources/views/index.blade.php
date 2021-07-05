@@ -65,8 +65,8 @@
 <form action="AddData" method="POST">
     @csrf
 
-    <input type="text" name="name" id="" placeholder="Imię">
-    <input type="email" name="email" id="" placeholder="E-mail">
+    <input type="text" name="name" id="" placeholder="Imię" maxlength="255">
+    <input type="email" name="email" id="" placeholder="E-mail" maxlength="255">
     <textarea type="textarea" rows="6" cols="70" name="textContent" id="" placeholder="Tekst"></textarea>
     <button type="submit">Wyślij</button>
 </form>
