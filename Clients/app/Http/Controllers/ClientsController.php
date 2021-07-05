@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
 use App\Models\Client;
+use Illuminate\Auth\Events\Validated;
+use Illuminate\Support\Facades\Validator;
+
+use function GuzzleHttp\Promise\all;
 
 class ClientsController extends Controller
 {
@@ -17,6 +21,12 @@ class ClientsController extends Controller
 
     public function AddData(Request $req)
     {
+        $validator = Validator::make($req->all(), [
+            'name' => 'required|max:255',
+            'email' => 'sometimes|max:255',
+            'textContent' => 'required'
+        ])->validate();
+
         $client = new Client();
         $client->name = $req->name;
         $client->email = $req->email;

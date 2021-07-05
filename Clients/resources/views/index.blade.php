@@ -25,6 +25,9 @@
             margin-top: 25px;
             width: 60%;
         }
+        form button{
+            cursor: pointer;
+        }
         table{
             font-size: 2rem;
             margin: 0 auto;
@@ -39,7 +42,10 @@
         table td{
             font-size: 1.2rem;
         }
-
+        table th:last-child, table td:last-child{
+            width: 50px;
+            min-width: 50px;
+        }
         .page{
             font-size: 40px;
             margin-top: 50px;
@@ -56,22 +62,26 @@
         }
         a{
             text-decoration: none;
-            color: coral;
+            color: orange;
         }
     </style>
 
 </head>
 <body>
-<form action="AddData" method="POST">
-    @csrf
-
-    <input type="text" name="name" id="" placeholder="Imię" maxlength="255">
-    <input type="email" name="email" id="" placeholder="E-mail" maxlength="255">
-    <textarea type="textarea" rows="6" cols="70" name="textContent" id="" placeholder="Tekst"></textarea>
-    <button type="submit">Wyślij</button>
-</form>
+{!! Form::open(['action' => ['App\Http\Controllers\ClientsController@AddData', 'method' => 'POST']]) !!}
+    {{Form::text('name', '', ['placeholder' => 'Imię', 'maxlength' => 255])}}
+    {{Form::email('email', '', ['placeholder' => 'E-Mail', 'maxlength' => 255])}}
+    {{Form::textarea('textContent', '', ['placeholder' => 'Tekst'])}}
+    {{Form::submit('Wyślij')}}
+{!! Form::close() !!}
 
 <div>
+    @if (isset($errors) && count($errors) > 0)
+        @foreach ( $errors->all() as $error)
+            <h3 style="color: red; text-align: center">{{$error}}</h3>
+        @endforeach
+    @endif
+
     <table>
         <tr>
             <th>ID</th>
@@ -79,6 +89,7 @@
             <th>Email</th>
             <th>Text</th>
             <th>Data Dodania</th>
+            <th>Edytuj / Usuń</th>
         </tr>
 
 
@@ -90,12 +101,12 @@
                     <td>{{$client->email}}</td>
                     <td>{{$client->textContent}}</td>
                     <td>{{$client->created_at}}</td>
+                    <th>{!! Form::checkbox('clientIDs[]', $client->id) !!}</th>
+
                 </tr>
             @endforeach
     </table>
-    <div class="page">
-        {{$clients->onEachSide(1)->links('pagination::bootstrap-4')}}
-    </div>
+
         @else
             <tr>
                 <td>Brak rekordów.</td>
@@ -103,6 +114,9 @@
     </table>
         @endif
 
+        <div class="page">
+            {{$clients->onEachSide(1)->links('pagination::bootstrap-4')}}
+        </div>
 
 </div>
 </body>

@@ -17,3 +17,5 @@ Route::get('/', [ClientsController::class, 'index']);
 
 Route::post('AddData', [ClientsController::class, 'AddData']);
 
+
+
