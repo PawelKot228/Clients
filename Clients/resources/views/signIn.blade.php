@@ -58,7 +58,7 @@
 
         }
         .page-link{
-        padding: 15px;
+            padding: 15px;
         }
         a{
             text-decoration: none;
@@ -81,61 +81,24 @@
 <body>
 
 <nav>
-    <p style="margin-right: auto"><a href="#">Home</a></p>
+    <p style="margin-right: auto"><a href="{{action([\App\Http\Controllers\ClientsController::class, 'index'])}}">Home</a></p>
     <p><a href="{{action([\App\Http\Controllers\ReportsController::class, 'SendReport'])}}">Wyślij zgłoszenie</a></p>
     <p><a href="{{action([\App\Http\Controllers\AdministratorsController::class, 'SignIn'])}}">Logowanie</a></p>
 </nav>
 
-{!! Form::open(['action' => ['App\Http\Controllers\ClientsController@AddData', 'method' => 'POST']]) !!}
-    {{Form::text('name', '', ['placeholder' => 'Imię', 'maxlength' => 255])}}
-    {{Form::email('email', '', ['placeholder' => 'E-Mail', 'maxlength' => 255])}}
-    {{Form::textarea('textContent', '', ['placeholder' => 'Tekst'])}}
-    {{Form::submit('Wyślij')}}
+@if (isset($errors) && count($errors) > 0)
+    @foreach ( $errors->all() as $error)
+        <h3 style="color: red; text-align: center">{{$error}}</h3>
+    @endforeach
+@endif
+<p>email: pawelkot898@gmail.com<br>Haslo: qwerty</p>
+{!! Form::open(['action' => ['App\Http\Controllers\AdministratorsController@Auth', 'method' => 'POST']]) !!}
+
+
+{{Form::text('email', '', ['placeholder' => 'E-Mail', 'maxlength' => 255])}}
+{{Form::text('password', '', ['placeholder' => 'Hasło', 'maxlength' => 255])}}
+{{Form::submit('Zaloguj się')}}
 {!! Form::close() !!}
 
-<div>
-    @if (isset($errors) && count($errors) > 0)
-        @foreach ( $errors->all() as $error)
-            <h3 style="color: red; text-align: center">{{$error}}</h3>
-        @endforeach
-    @endif
-
-
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Imię</th>
-            <th>Email</th>
-            <th>Text</th>
-            <th>Data Dodania</th>
-        </tr>
-
-
-        @if(count($clients) > 0)
-            @foreach($clients as $client)
-                @if($client->status != -1)
-                    <tr>
-                        <td>{{$client->id}}</td>
-                        <td>{{$client->name}}</td>
-                        <td>{{$client->email}}</td>
-                        <td>{{$client->textContent}}</td>
-                        <td>{{$client->created_at}}</td>
-                    </tr>
-                @endif
-            @endforeach
-    </table>
-
-        @else
-            <tr>
-                <td>Brak rekordów.</td>
-            </tr>
-    </table>
-        @endif
-
-        <div class="page">
-            {{$clients->onEachSide(1)->links('pagination::bootstrap-4')}}
-        </div>
-
-</div>
 </body>
 </html>

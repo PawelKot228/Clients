@@ -58,7 +58,7 @@
 
         }
         .page-link{
-        padding: 15px;
+            padding: 15px;
         }
         a{
             text-decoration: none;
@@ -81,26 +81,18 @@
 <body>
 
 <nav>
-    <p style="margin-right: auto"><a href="#">Home</a></p>
+    <p style="margin-right: auto"><a href="{{action([\App\Http\Controllers\ClientsController::class, 'index'])}}">Home</a></p>
     <p><a href="{{action([\App\Http\Controllers\ReportsController::class, 'SendReport'])}}">Wyślij zgłoszenie</a></p>
     <p><a href="{{action([\App\Http\Controllers\AdministratorsController::class, 'SignIn'])}}">Logowanie</a></p>
 </nav>
 
-{!! Form::open(['action' => ['App\Http\Controllers\ClientsController@AddData', 'method' => 'POST']]) !!}
-    {{Form::text('name', '', ['placeholder' => 'Imię', 'maxlength' => 255])}}
-    {{Form::email('email', '', ['placeholder' => 'E-Mail', 'maxlength' => 255])}}
-    {{Form::textarea('textContent', '', ['placeholder' => 'Tekst'])}}
-    {{Form::submit('Wyślij')}}
-{!! Form::close() !!}
 
+
+<h1 style="text-align: center">Zalogowano!</h1>
+<h3 style="text-align: center">Lista osób z statusem -1</h3>
+
+{!! Form::open(['action' => ['App\Http\Controllers\ReportsController@HandleReport', 'method' => 'POST']]) !!}
 <div>
-    @if (isset($errors) && count($errors) > 0)
-        @foreach ( $errors->all() as $error)
-            <h3 style="color: red; text-align: center">{{$error}}</h3>
-        @endforeach
-    @endif
-
-
     <table>
         <tr>
             <th>ID</th>
@@ -113,29 +105,40 @@
 
         @if(count($clients) > 0)
             @foreach($clients as $client)
-                @if($client->status != -1)
                     <tr>
                         <td>{{$client->id}}</td>
                         <td>{{$client->name}}</td>
                         <td>{{$client->email}}</td>
                         <td>{{$client->textContent}}</td>
                         <td>{{$client->created_at}}</td>
+                        <td>
+                            @if ($loop->first)
+                                Zaakceptuj: {!! Form::checkbox('$DeleteReport[]', $client->id, true) !!}
+                                Odrzuć: {!! Form::checkbox('$RestoreReport[]', $client->id) !!}
+                            @else
+                                Zaakceptuj: {!! Form::checkbox('$DeleteReport[]', $client->id) !!}
+                                Odrzuć: {!! Form::checkbox('$RestoreReport[]', $client->id) !!}
+                            @endif
+
+                        </td>
                     </tr>
-                @endif
+
             @endforeach
+
+    @else
+        <tr>
+            <td>Brak rekordów.</td>
+        </tr>
+    @endif
     </table>
 
-        @else
-            <tr>
-                <td>Brak rekordów.</td>
-            </tr>
-    </table>
-        @endif
-
-        <div class="page">
-            {{$clients->onEachSide(1)->links('pagination::bootstrap-4')}}
-        </div>
+    {{Form::submit('Wyślij')}}
+    <div class="page">
+        {{$clients->onEachSide(1)->links('pagination::bootstrap-4')}}
+    </div>
 
 </div>
+
+
 </body>
 </html>

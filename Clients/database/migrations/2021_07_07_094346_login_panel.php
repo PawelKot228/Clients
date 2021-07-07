@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Clients extends Migration
+class LoginPanel extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class Clients extends Migration
      */
     public function up()
     {
-        Schema::create('clients', function (Blueprint $table) {
+        Schema::create('Users', function(Blueprint $table)
+        {
             $table->id();
-            $table->string('name', 255);
-            $table->string('email', 255)->nullable();
-            $table->text('textContent');
-            $table->integer('status')->default(0);
+            $table->text('email', 255)->unique();
+            $table->text('password', 255);
+            $table->string('remember_token', 100)->nullable();
             $table->timestamps();
         });
     }
